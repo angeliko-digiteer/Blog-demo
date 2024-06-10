@@ -1,0 +1,7 @@
+<%= form_with(model: [post, comment]) do |form| %>
+  <div class="form-control">
+    <%= form.rich_text_area :body %><br />
+    <%= form.submit submit_label, class: "btn btn-primary" %>
+  </div>
+<% end %>
+

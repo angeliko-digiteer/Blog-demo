@@ -10,6 +10,8 @@ class PostsController < ApplicationController
   # GET /posts/1 or /posts/1.json
   def show
     @post.update(views: @post.views + 1)
+    @comments = @post.comments.order(created_at: :desc)
+    @comment_count = @comments.size
   end
 
   # GET /posts/new
@@ -55,13 +57,18 @@ class PostsController < ApplicationController
 
   # DELETE /posts/1 or /posts/1.json
   def destroy
-    @post.destroy
+    if current_user != @post.user
+      redirect_to @post, notice: "You are not authorized to delete this post."
+    else
+      @post.destroy
 
-    respond_to do |format|
-      format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
-      format.json { head :no_content }
+      respond_to do |format|
+        format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
+        format.json { head :no_content }
+      end
     end
   end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
